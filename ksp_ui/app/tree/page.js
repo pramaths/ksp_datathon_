@@ -1,5 +1,6 @@
 
 import Tree from "../../components/tree";
+import dynamic from "next/dynamic";
 const TreeComponentNoSSR = dynamic(() => import('../../components/tree'), {
     ssr: false, // This line is key to avoiding SSR for the map component
   });
