@@ -2,6 +2,7 @@ import Image from "next/image";
 import Homepage from '../components/Home'
 import Bar from '../components/Bar'
 import BubbleChart from "@/components/BubbleChart";
+import dynamic from "next/dynamic";
 // import Tree from "../components/tree";
 // import DistributedTree from '../components/DistributesTree'
 const DistributedTree = dynamic(() => import('../components/DistributesTree'), {
