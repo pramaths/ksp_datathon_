@@ -3,6 +3,8 @@ import Homepage from '../components/Home'
 import Bar from '../components/Bar'
 import BubbleChart from "@/components/BubbleChart";
 import dynamic from "next/dynamic";
+import DataTable from "../components/DataTable";
+import PolarAreaChart from "../components/PolarChart";
 // import Tree from "../components/tree";
 // import DistributedTree from '../components/DistributesTree'
 const DistributedTree = dynamic(() => import('../components/DistributesTree'), {
@@ -17,6 +19,8 @@ export default function Home() {
    </div>
    <BubbleChart/>
 <DistributedTree/>
+<DataTable/>
+<PolarAreaChart/>
     </main>
   );
 }
