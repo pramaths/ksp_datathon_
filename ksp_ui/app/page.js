@@ -11,8 +11,10 @@ const DistributedTree = dynamic(() => import('../components/DistributesTree'), {
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">
+      <div className="flex w-full">
    <Homepage/>
    <Bar/>
+   </div>
    <BubbleChart/>
 <DistributedTree/>
     </main>

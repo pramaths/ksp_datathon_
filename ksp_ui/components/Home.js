@@ -4,6 +4,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 
 export default function BasicPie() {
   return (
+    <div className='border rounded-sm border-cyan-700'>
     <PieChart
       series={[
         {
@@ -17,5 +18,6 @@ export default function BasicPie() {
       width={400}
       height={200}
     />
+    </div>
   );
 }

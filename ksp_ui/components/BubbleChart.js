@@ -1,39 +1,4 @@
  'use client'
-// // components/BubbleChart.js
-// import React from 'react';
-// import { Bubble } from 'react-chartjs-2';
-// import Chart from 'chart.js/auto';
-
-// const BubbleChart = () => {
-//     const data = {
-//         datasets: [{
-//             label: 'First Dataset',
-//             data: [
-//                 { x: 20, y: 30, r: 15 },
-//                 { x: 40, y: 10, r: 10 },
-//                 { x: 25, y: 5, r: 5 },
-//                 { x: 55, y: 50, r: 10 },
-//                 { x: 45, y: 25, r: 15 },
-//             ],
-//             backgroundColor: 'rgba(255, 99, 132, 0.6)',
-//         }]
-//     };
-
-//     const options = {
-//         scales: {
-//             x: {
-//                 beginAtZero: true,
-//             },
-//             y: {
-//                 beginAtZero: true,
-//             },
-//         },
-//     };
-
-//     return <Bubble data={data} options={options} />;
-// };
-
-// export default BubbleChart;
 import React from 'react';
 import { Bubble } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
@@ -60,11 +25,11 @@ const BubbleChart = () => {
         datasets: [{
             label: 'First Dataset',
             data: [
-                { x: 20, y: 30, v: 150 }, // Note: Added 'v' for opacity calculation
+                { x: 20, y: 17, v: 150 }, // Note: Added 'v' for opacity calculation
                 { x: 40, y: 10, v: 100 },
                 { x: 25, y: 5, v: 50 },
-                { x: 55, y: 50, v: 100 },
-                { x: 45, y: 25, v: 150 },
+                { x: 55, y: 10, v: 100 },
+                { x: 45, y: 15, v: 150 },
             ],
             backgroundColor: colorize.bind(null, false),
             borderColor: colorize.bind(null, true),
@@ -104,7 +69,11 @@ const BubbleChart = () => {
         },
     };
 
-    return <Bubble data={data} options={options} />;
+    return (
+    <div className='w-full h-96'>
+    <Bubble data={data} options={options} />;
+    </div>
+    )
 };
 
 export default BubbleChart;
