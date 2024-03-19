@@ -9,10 +9,11 @@ const TreemapChart = () => {
     // Function to fetch data from your API
     const fetchData = async () => {
       try {
-        const response = await fetch('https://9f51-35-229-198-103.ngrok-free.app/data', {
+        const response = await fetch('https://83b9-35-229-198-103.ngrok-free.app/data', {
           method: 'GET', // Specify the method
           headers: {
-            'User-Agent': 'CustomUserAgent/1.0'
+            'User-Agent': 'CustomUserAgent/1.0',
+            'ngrok-skip-browser-warning': 'true' 
           },
         });
 console.log("hey",data)
