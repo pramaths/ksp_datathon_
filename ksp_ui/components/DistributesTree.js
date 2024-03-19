@@ -1,20 +1,39 @@
 'use client'
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import ApexCharts from 'apexcharts';
 
 const TreemapChart = () => {
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    // Function to fetch data from your API
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://9f51-35-229-198-103.ngrok-free.app/data', {
+          method: 'GET', // Specify the method
+          headers: {
+            'User-Agent': 'CustomUserAgent/1.0'
+          },
+        });
+console.log("hey",data)
+        // Transform data to the format expected by ApexCharts
+        const transformedData = Object.entries(data).map(([key, value]) => ({
+          x: key,
+          y: parseInt(value.replace(' arrested', ''), 10), // assuming value is like "124 arrested"
+        }));
+
+        setChartData(transformedData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log(chartData)
   useEffect(() => {
     const options = {
-      series: [
-        {
-          data: [
-            { x: 'New Delhi', y: 218 },
-            { x: 'Kolkata', y: 149 },
-            // Add the rest of your data points here...
-            { x: 'Kanpur', y: 29 }
-          ]
-        }
-      ],
+      series: [{ data: chartData }],
       legend: { show: false },
       chart: { height: 350, type: 'treemap' },
       title: { text: 'Distributed Treemap (different color for each cell)', align: 'center' },
@@ -36,7 +55,7 @@ const TreemapChart = () => {
 
     // Optional: Cleanup function to destroy chart on component unmount
     return () => chart.destroy();
-  }, []);
+  }, [chartData]);
 
   return <div id="chart"></div>;
 };
