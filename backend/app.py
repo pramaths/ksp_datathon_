@@ -23,6 +23,21 @@ def get_processed_data():
     aggregated_data = df_filtered.groupby('CrimeGroup_Name')['Total Arrested'].sum().reset_index()
     return aggregated_data.to_dict('records')
 
+def get_crime_locations(unit_name='Amengad PS'):
+    csv_file_path = r'Copy of FIR_Details_Data.csv'
+    df = pd.read_csv(csv_file_path)
+    df = df[df['UnitName'] == unit_name]
+
+    def aggregate_locations(group):
+        return [(row['Latitude'], row['Longitude']) for index, row in group.iterrows()]
+
+    crime_by_unit = df.groupby(['CrimeGroup_Name']).apply(aggregate_locations).reset_index(name='Locations')
+
+    crime_dict = {row['CrimeGroup_Name']: row['Locations'] for index, row in crime_by_unit.iterrows()}
+    return crime_dict
+
+
+
 @app.route("/")
 def index():
     return "Hello from Local!"
@@ -35,6 +50,12 @@ def health_check():
 def get_data():
     data_for_chart = get_processed_data()
     return jsonify(data_for_chart)
+
+
+@app.route("/crime_locations", methods=['GET'])
+def crime_locations():
+    data = get_crime_locations()
+    return jsonify(data)
 
 if __name__ == "__main__":
     # Run the Flask app without threading or ngrok setup
