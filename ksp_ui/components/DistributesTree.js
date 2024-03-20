@@ -1,70 +1,4 @@
 'use client'
-// import React, { useEffect,useState } from 'react';
-// import ApexCharts from 'apexcharts';
-
-// const TreemapChart = () => {
-//   const [chartData, setChartData] = useState([]);
-
-//   useEffect(() => {
-//     // Function to fetch data from your API
-//     const fetchData = async () => {
-//       try {
-//         const response = await fetch('https://ef6c-34-136-255-126.ngrok-free.app/data', {
-//           method: 'GET', // Specify the method
-//           headers: {
-//             'User-Agent': 'CustomUserAgent/1.0',
-//             'ngrok-skip-browser-warning': 125868 
-//           },
-//         });
-//         const data= await response.json()
-// console.log("hey",data)
-//         // Transform data to the format expected by ApexCharts
-//         const transformedData = Object.entries(data).map(([key, value]) => ({
-//           x: key,
-//           y: parseInt(value.replace(' arrested', ''), 10), // assuming value is like "124 arrested"
-//         }));
-
-//         setChartData(transformedData);
-//       } catch (error) {
-//         console.error('Error fetching data:', error);
-//       }
-//     };
-
-//     fetchData();
-//   }, []);
-
-//   console.log("heyyy",chartData)
-//   useEffect(() => {
-//     console.log("ChartData after state update: ", chartData);
-//     const options = {
-//       series: [{ data: chartData }],
-//       legend: { show: false },
-//       chart: { height: 350, type: 'treemap' },
-//       title: { text: 'Distributed Treemap (different color for each cell)', align: 'center' },
-//       colors: [
-//         '#3B93A5', '#F7B844', '#ADD8C7', '#EC3C65',
-//         // Add the rest of your colors here...
-//         '#C0ADDB'
-//       ],
-//       plotOptions: {
-//         treemap: {
-//           distributed: true,
-//           enableShades: false
-//         }
-//       }
-//     };
-
-//     const chart = new ApexCharts(document.querySelector("#chart"), options);
-//     chart.render();
-
-//     // Optional: Cleanup function to destroy chart on component unmount
-//     return () => chart.destroy();
-//   }, [chartData]);
-
-//   return <div id="chart"></div>;
-// };
-
-// export default TreemapChart;
 import React, { useEffect, useState } from 'react';
 import ApexCharts from 'apexcharts';
 
@@ -76,7 +10,7 @@ const TreemapChart = () => {
     const fetchData = async () => {
       setLoading(true); // Begin loading
       try {
-        const response = await fetch('https://5c2d-34-125-27-67.ngrok-free.app/data', {
+        const response = await fetch(' http://127.0.0.1:5000/data', {
           method: 'GET',
           headers: {
             'User-Agent': 'CustomUserAgent/1.0',
@@ -110,7 +44,7 @@ const TreemapChart = () => {
           data: chartData
         }],
         chart: {
-          height: 350,
+          height: 550,
           type: 'treemap' // Make sure this type is supported
         },
         title: {
@@ -124,7 +58,31 @@ const TreemapChart = () => {
             enableShades: false
           }
         },
-        // ... any other options you need
+        dataLabels: {
+          enabled: true,
+          style: {
+            colors: ['#000'] // Sets the data label colors to black
+          }
+        },
+        states: {
+          hover: {
+            filter: {
+              type: 'darken',
+              value: 1
+            }
+          }
+        },
+        tooltip: {
+          style: {
+            fontSize: '12px',
+            fontFamily: undefined
+          },
+          y: {
+            formatter: function (val) {
+              return val;
+            }
+          }
+        },
       };
   
       // Check if the chart container is present in the DOM

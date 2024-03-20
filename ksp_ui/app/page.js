@@ -18,7 +18,7 @@ const DistributedTree = dynamic(() => import('../components/DistributesTree'), {
 });
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">
+    <main className="flex min-h-screen flex-col  justify-between p-24 bg-white">
       <div className="flex w-full">
    <Homepage/>
    <Bar/>
@@ -29,7 +29,7 @@ export default function Home() {
 </div>
 <DataTable/>
 <div className="flex justify-between">
-  <div className="flex items-start">
+  <div className="flex items-start border shadow-xl justify-start">
 <PolarAreaChart/>
 </div>
 <MapComponentNoSSR/>

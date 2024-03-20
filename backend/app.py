@@ -14,7 +14,7 @@ app.after_request(add_header)
 
 def get_processed_data():
     # Adjust the file path as per your local setup
-    csv_file_path = 'backend\Copy of FIR_Details_Data.csv'
+    csv_file_path = r'Copy of FIR_Details_Data.csv'
     df = pd.read_csv(csv_file_path)
     df_filtered = df[df['UnitName'] == 'Amengad PS'].copy()
     df_filtered['Arrested Male'] = pd.to_numeric(df_filtered['Arrested Male'], errors='coerce').fillna(0)
