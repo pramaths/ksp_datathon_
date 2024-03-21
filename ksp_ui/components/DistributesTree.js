@@ -18,7 +18,7 @@ const TreemapChart = ({ data }) => {
           },
         ],
         chart: {
-          height: 550,
+          height: 600,
           type: 'treemap', // Make sure this type is supported
         },
         title: {
