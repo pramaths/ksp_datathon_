@@ -14,11 +14,11 @@ export default function BasicPie({ data }) {
   ];
 
   return (
-    <div className='border rounded-sm border-cyan-700'>
+    <div className=''>
       <PieChart
         series={series}
-        width={400}
-        height={200}
+        width={500}
+        height={300}
       />
     </div>
   );

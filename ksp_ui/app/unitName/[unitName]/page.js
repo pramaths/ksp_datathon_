@@ -9,7 +9,7 @@ import DataTable from "../../../components/DataTable";
 import PolarAreaChart from "../../../components/PolarChart";
 import { useEffect, useState } from 'react';
 
-const MapComponentNoSSR = dynamic(() => import('../../../components/Map'), { ssr: false });
+const Map = dynamic(() => import('../../../components/Map'), { ssr: false });
 const DistributedTree = dynamic(() => import('../../../components/DistributesTree'), { ssr: false });
 
 export default function unitName({params}) {
@@ -36,12 +36,14 @@ const decoded = decodeURIComponent(encoded);
   if (!data) {
     return <div>Loading...</div>;
   }
-
+  // console.log("Data before passing to MapComponentNoSSR:", data.map_locations);
   console.log(data)
   return (
-    <main className="flex min-h-screen flex-col justify-between p-24 bg-white">
-      <div className="flex w-full">
+    <main className="flex min-h-screen flex-col justify-between p-24 bg-white overflow-hidden">
+      <div className="flex w-full h-96">
+        <div className='mr-4'>
         <Homepage data={data.pie_chart_data} />
+        </div>
         <Bar data={data.bar_chart_data} />
       </div>
       <BubbleChart data={data.bubble_chart_data} />
@@ -52,9 +54,9 @@ const decoded = decodeURIComponent(encoded);
       <DataTable data={data} />
       <div className="flex justify-between">
         <div className="flex items-start border shadow-xl justify-start">
-          <PolarAreaChart data={data} />
+          <PolarAreaChart />
         </div>
-        <MapComponentNoSSR data={data.map_locations} />
+        <Map data={data.map_locations} />
       </div>
     </main>
   );
