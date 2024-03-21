@@ -27,9 +27,7 @@ export default function Home({ data }) {
     }
 
     fetchData();
-  }, [unitName]); // Re-run the effect only if unitName changes
-
-  // Conditional rendering to wait for data to be fetched
+  }, [unitName]); 
   if (!data) {
     return <div>Loading...</div>;
   }
