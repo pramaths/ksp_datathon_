@@ -39,75 +39,117 @@
 
 // export default MapComponent;
 
+// import React from 'react';
+// import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+// import 'leaflet/dist/leaflet.css';
+// import L from 'leaflet';
+// import 'leaflet.markercluster';
+
+// const CrimeMarkers = () => {
+//   const map = useMap();
+
+//   React.useEffect(() => {
+//     const markers = L.markerClusterGroup();
+//     crimeData.forEach(crime => {
+//       const marker = L.marker(crime.location, {
+//         icon: L.divIcon({
+//           className: 'crime-marker',
+//           html: `<div style="background-color: ${getMarkerColor(crime.type)}; width: 10px; height: 10px; border-radius: 50%;"></div>`,
+//         }),
+//       });
+//       markers.addLayer(marker);
+//     });
+//     map.addLayer(markers);
+//     return () => {
+//       map.removeLayer(markers);
+//     };
+//   }, [map]);
+
+//   return null;
+// };
+
+// const MapComponent = () => {
+//   return (
+//     <MapContainer center={[15.993124, 75.943519]} zoom={13} style={{ height: '400px', width: '100%' }}>
+//       <TileLayer
+//         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+//       />
+//       <CrimeMarkers />
+//     </MapContainer>
+//   );
+// };
+
+// export default MapComponent;
+
+
 import React from 'react';
 import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import 'leaflet.markercluster';
 
-const crimeData = [
-  { type: 'CYBER CRIME', location: [15.993124, 75.943519] },
-  { type: 'PREVENTION OF DAMAGE TO PUBLIC PROPERTY ACT 1984', location: [0.0, 0.0] },
-  { type: 'REPRESENTATION OF PEOPLE ACT 1951 & 1988', location: [0.0, 0.0] },
-  { type: 'ANIMAL', location: [15.940025, 75.917794] },
-  { type: 'ANTIQUES (CULTURAL PROPERTY)', location: [16.011294, 75.0632] },
-  { type: 'ARSON', location: [15.976676, 75.910613] },
-  // Add more data as needed
-];
-
-const crimeTypeColors = {
-  'CYBER CRIME': 'blue',
-  'PREVENTION OF DAMAGE TO PUBLIC PROPERTY ACT 1984': 'red',
-  'REPRESENTATION OF PEOPLE ACT 1951 & 1988': 'green',
-  'ANIMAL': 'purple',
-  'ANTIQUES (CULTURAL PROPERTY)': 'orange',
-  'ARSON': 'yellow',
-  // Define more colors as needed
-};
-const getMarkerColor = (type) => {
-  const colors = {
-    'CYBER CRIME': 'blue',
-    'PREVENTION OF DAMAGE TO PUBLIC PROPERTY ACT 1984': 'red',
-    'REPRESENTATION OF PEOPLE ACT 1951 & 1988': 'green',
-    'ANIMAL': 'purple',
-    'ANTIQUES (CULTURAL PROPERTY)': 'orange',
-    'ARSON': 'yellow',
-
-  };
-  return colors[type] || 'gray'; // Default color
-};
-
-const CrimeMarkers = () => {
+const CrimeMarkers = ({ crimeData }) => {
   const map = useMap();
 
   React.useEffect(() => {
     const markers = L.markerClusterGroup();
-    crimeData.forEach(crime => {
-      const marker = L.marker(crime.location, {
-        icon: L.divIcon({
-          className: 'crime-marker',
-          html: `<div style="background-color: ${getMarkerColor(crime.type)}; width: 10px; height: 10px; border-radius: 50%;"></div>`,
-        }),
+
+    crimeData.map_locations.forEach((crimeGroup) => {
+      crimeGroup.Locations.forEach((location) => {
+        const marker = L.marker([location.Latitude, location.Longitude], {
+          icon: L.divIcon({
+            className: 'crime-marker',
+            html: `<div style="background-color: ${getMarkerColor(crimeGroup.CrimeGroup_Name)}; width: 10px; height: 10px; border-radius: 50%;"></div>`,
+          }),
+        });
+        markers.addLayer(marker);
       });
-      markers.addLayer(marker);
     });
+
     map.addLayer(markers);
+
     return () => {
       map.removeLayer(markers);
     };
-  }, [map]);
+  }, [map, crimeData]);
 
   return null;
 };
 
-const MapComponent = () => {
+const getMarkerColor = (crimeType) => {
+  const crimeColors = {
+    'CYBER CRIME': 'red',
+    'ATTEMPT TO MURDER': 'blue',
+    'BURGLARY - DAY': 'green',
+    'CASES OF HURT': 'yellow',
+    'CHEATING': 'purple',
+    'CRIMES RELATED TO WOMEN': 'orange',
+    'CRUELTY BY HUSBAND': 'pink',
+    'KARNATAKA POLICE ACT 1963': 'brown',
+    'KIDNAPPING AND ABDUCTION': 'teal',
+    'Karnataka State Local Act': 'lime',
+    'MISSING PERSON': 'maroon',
+    'MOLESTATION': 'navy',
+    'MOTOR VEHICLE ACCIDENTS FATAL': 'olive',
+    'MOTOR VEHICLE ACCIDENTS NON-FATAL': 'fuchsia',
+    'POCSO': 'indigo',
+    'RAPE': 'crimson',
+    'RIOTS': 'darkgreen',
+    'SCHEDULED CASTE AND THE SCHEDULED TRIBES ': 'darkred',
+  };
+
+  return crimeColors[crimeType] || 'gray';
+};
+
+const MapComponent = ({ data }) => {
   return (
     <MapContainer center={[15.993124, 75.943519]} zoom={13} style={{ height: '400px', width: '100%' }}>
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       />
-      <CrimeMarkers />
+      <CrimeMarkers crimeData={data} />
     </MapContainer>
   );
 };

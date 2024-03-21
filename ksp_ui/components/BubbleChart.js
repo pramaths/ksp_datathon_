@@ -1,4 +1,4 @@
- 'use client'
+'use client'
 import React from 'react';
 import { Bubble } from 'react-chartjs-2';
 import Chart from 'chart.js/auto';
@@ -19,61 +19,73 @@ function colorize(opaque, context) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-const BubbleChart = () => {
-    // Modified to include raw data required by the colorize function
-    const data = {
-        datasets: [{
-            label: 'First Dataset',
-            data: [
-                { x: 20, y: 17, v: 150 }, // Note: Added 'v' for opacity calculation
-                { x: 40, y: 10, v: 100 },
-                { x: 25, y: 5, v: 50 },
-                { x: 55, y: 10, v: 100 },
-                { x: 45, y: 15, v: 150 },
-            ],
-            backgroundColor: colorize.bind(null, false),
-            borderColor: colorize.bind(null, true),
-        }]
-    };
+const BubbleChartComponent = ({ data }) => {
+  const chartData = {
+    datasets: [
+      {
+        label: 'Case Count',
+        data: data.map(item => ({
+          x: item.IOName.length,
+          y: item.Cases,
+          v: item.Cases,
+          r: Math.sqrt(item.Cases) * 3,
+        })),
+        backgroundColor: colorize.bind(null, false),
+        borderColor: colorize.bind(null, true),
+      },
+    ],
+  };
 
-    const options = {
-        aspectRatio: 1,
-        plugins: {
-            legend: false,
-            tooltip: false,
+  const options = {
+    aspectRatio: 1,
+    plugins: {
+      legend: false,
+      tooltip: {
+        callbacks: {
+          label: context => `IO Name: ${context.raw.x}, Cases: ${context.raw.y}`,
         },
-        elements: {
-            point: {
-                borderWidth: function(context) {
-                    return Math.min(Math.max(1, context.datasetIndex + 1), 8);
-                },
-                hoverBackgroundColor: 'transparent',
-                hoverBorderColor: 'rgb(0, 0, 0)', // Modify as needed
-                hoverBorderWidth: function(context) {
-                    return Math.round(8 * context.raw.v / 1000);
-                },
-                radius: function(context) {
-                    const size = context.chart.width;
-                    const base = Math.abs(context.raw.v) / 1000;
-                    return (size / 24) * base;
-                }
-            }
+      },
+    },
+    elements: {
+      point: {
+        borderWidth: function(context) {
+          return Math.min(Math.max(1, context.datasetIndex + 1), 8);
         },
-        scales: {
-            x: {
-                beginAtZero: true,
-            },
-            y: {
-                beginAtZero: true,
-            },
+        hoverBackgroundColor: 'transparent',
+        hoverBorderColor: 'rgb(0, 0, 0)',
+        hoverBorderWidth: function(context) {
+          return Math.round(8 * context.raw.v / 1000);
         },
-    };
+        radius: function(context) {
+          const size = context.chart.width;
+          const base = Math.abs(context.raw.v) / 1000;
+          return (size / 24) * base;
+        },
+      },
+    },
+    scales: {
+      x: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'IO Name Length',
+        },
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Cases',
+        },
+      },
+    },
+  };
 
-    return (
+  return (
     <div className='w-full h-96'>
-    <Bubble data={data} options={options} />;
+      <Bubble data={chartData} options={options} />
     </div>
-    )
+  );
 };
 
-export default BubbleChart;
+export default BubbleChartComponent;

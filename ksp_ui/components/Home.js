@@ -2,22 +2,24 @@
 import * as React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 
-export default function BasicPie() {
+export default function BasicPie({ data }) {
+  const series = [
+    {
+      data: data.map(item => ({
+        id: item.Complaint_Mode,
+        value: item.Count,
+        label: item.Complaint_Mode,
+      })),
+    },
+  ];
+
   return (
     <div className='border rounded-sm border-cyan-700'>
-    <PieChart
-      series={[
-        {
-          data: [
-            { id: 0, value: 10, label: 'series A' },
-            { id: 1, value: 15, label: 'series B' },
-            { id: 2, value: 20, label: 'series C' },
-          ],
-        },
-      ]}
-      width={400}
-      height={200}
-    />
+      <PieChart
+        series={series}
+        width={400}
+        height={200}
+      />
     </div>
   );
 }
