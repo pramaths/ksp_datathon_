@@ -22,7 +22,7 @@ console.log(officers)
     <div className='flex w-full overflow-hidden'>
     <DndProvider backend={HTML5Backend}>
       <div className='flex p-2 w-full'>
-        <div className='flex flex-wrap bg-white w-1/4 items-center overflow-y-auto' style={{ maxHeight: '100vh' }}>
+        <div className='flex flex-wrap bg-white w-1/4 items-center overflow-y-auto z-150' style={{ maxHeight: '100vh' }}>
           {officers.map(officer => (
             <OfficerCard key={officer.IOName} officer={officer} />
           ))}

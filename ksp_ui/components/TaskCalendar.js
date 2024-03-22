@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect,useMemo } from 'react'
 import { formatDate } from '@fullcalendar/core'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from './event-utils'
 import EventModal from './EventModal'
+import axios from 'axios'
 export default function DemoApp() {
   const [weekendsVisible, setWeekendsVisible] = useState(true)
   const [currentEvents, setCurrentEvents] = useState([])
@@ -21,45 +22,79 @@ const handleDateSelect = (selectInfo) => {
   setModalDefaultDate(selectInfo);
 };
 
+useEffect(() => {
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/events');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const events = await response.json();
+      setCurrentEvents(events); // Assuming the backend returns an array of events
+    } catch (error) {
+      console.error("Failed to fetch events:", error);
+    }
+  };
+
+  fetchEvents();
+}, []);
+
+const submitEventToServer = async (eventData) => {
+  console.log("thjyhdthtyrt",eventData)
+  try {
+    const response = await fetch('http://localhost:8000/events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: eventData.title,
+        description: eventData.description,
+        assignedTo: eventData.assignedTo, // Assuming ioNames is an array of officer IDs
+        start: eventData.start,
+        end: eventData.end,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log('Submitted successfully:', data);
+  } catch (error) {
+    console.error('Error submitting event:', error);
+  }
+};
+
 // Add a new function to handle the submission from the modal
 const handleEventSubmit = (eventData) => {
   let calendarApi = modalDefaultDate.view.calendar;
   calendarApi.unselect(); // clear date selection
   setIsModalOpen(false); // Close the modal
 
-  calendarApi.addEvent({
+  const newEvent = {
     id: createEventId(),
     title: eventData.title,
+    description:eventData.description,
     start: eventData.start,
     end: eventData.end,
+    assignedTo:eventData.ioNames,
     allDay: modalDefaultDate.allDay,
     extendedProps: {
       description: eventData.description,
       ioName: eventData.ioName,
     },
-  });
+  };
+  calendarApi.addEvent(newEvent);
+  submitEventToServer(newEvent);
+  
+  setIsModalOpen(false);
 };
 
   function handleWeekendsToggle() {
     setWeekendsVisible(!weekendsVisible)
   }
-
-  // function handleDateSelect(selectInfo) {
-  //   let title = prompt('Please enter a new title for your event')
-  //   let calendarApi = selectInfo.view.calendar
-
-  //   calendarApi.unselect() // clear date selection
-
-  //   if (title) {
-  //     calendarApi.addEvent({
-  //       id: createEventId(),
-  //       title,
-  //       start: selectInfo.startStr,
-  //       end: selectInfo.endStr,
-  //       allDay: selectInfo.allDay
-  //     })
-  //   }
-  // }
 
   function handleEventClick(clickInfo) {
     if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
@@ -70,7 +105,7 @@ const handleEventSubmit = (eventData) => {
   function handleEvents(events) {
     setCurrentEvents(events)
   }
-
+  const memoizedEvents = useMemo(() => currentEvents, [currentEvents]);
   return (
     <div className='demo-app w-full'>
       <Sidebar
@@ -80,6 +115,7 @@ const handleEventSubmit = (eventData) => {
       />
       <div className='demo-app-main w-full'>
         <FullCalendar
+        key={currentEvents.length} 
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
             left: 'prev,next today',
@@ -92,7 +128,9 @@ const handleEventSubmit = (eventData) => {
           selectMirror={true}
           dayMaxEvents={true}
           weekends={weekendsVisible}
-          initialEvents={INITIAL_EVENTS} // alternatively, use the `events` setting to fetch from a feed
+          initialEvents={currentEvents} // alternatively, use the `events` setting to fetch from a feed
+          // events={currentEvents}
+          // events={memoizedEvents}
           select={handleDateSelect}
           eventContent={renderEventContent} // custom render function
           eventClick={handleEventClick}
