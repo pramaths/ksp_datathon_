@@ -7,60 +7,7 @@ CORS(app)
 
 csv_file_path = r'Narayanapura_PS_Unit.csv'  # Update to your CSV file path
 csv_file_path1 = r'merged_dataset.csv'  # Update to your CSV file path
-
-
-# def calculate_io_details(unit_name):
-#     df = pd.read_csv(csv_file_path1)
-    
-#     # Filter by unit_name
-#     df = df[df['UnitName'].str.strip().str.upper() == unit_name.upper()]
-
-#     # Convert date strings to datetime objects for calculation
-#     df['Offence_From_Date'] = pd.to_datetime(df['Offence_From_Date'], errors='coerce')
-#     df['Final_Report_Date'] = pd.to_datetime(df['Final_Report_Date'], errors='coerce')
-
-#     # Calculate the duration for each case
-#     df['Case_Duration'] = (df['Final_Report_Date'] - df['Offence_From_Date']).dt.days
-
-#     # Preparing crime info with unique identifier
-#     df['Unique_Crime_ID'] = df['CrimeGroup_Name'] + '_' + df['CrimeHead_Name']
-#     df['Crime_Info'] = df.apply(lambda x: {'CrimeGroup': x['CrimeGroup_Name'], 'CrimeHead': x['CrimeHead_Name'], 'Duration': x['Case_Duration'], 'Arrested_Count': x['Arrested Count No.'], 'Conviction_Count': x['Conviction Count']}, axis=1)
-
-#     # Unique aggregation of crimes
-#     unique_crimes = df.groupby('Unique_Crime_ID').agg({
-#         'Crime_Info': 'first',  # Assuming first instance has all needed info
-#         'Arrested Count No.': 'sum',
-#         'Conviction Count': 'sum'
-#     }).reset_index()
-
-#     # Map the aggregated counts back to Crime_Info
-#     unique_crimes['Crime_Info'] = unique_crimes.apply(lambda x: {**x['Crime_Info'], 'Arrested_Count': x['Arrested Count No.'], 'Conviction_Count': x['Conviction Count']}, axis=1)
-
-#     # Now, aggregate by IOName
-#     grouped = df.groupby('IOName').agg({
-#         'Unique_Crime_ID': lambda x: list(x),
-#         'FIRNo': 'count',
-#         'Case_Duration': 'mean'
-#     }).reset_index()
-
-#     # Mapping the unique crimes back to IOs
-#     grouped['Crimes'] = grouped['Unique_Crime_ID'].apply(lambda ids: [unique_crimes.loc[unique_crimes['Unique_Crime_ID'] == id, 'Crime_Info'].values[0] for id in ids])
-
-#     grouped.rename(columns={
-#         'FIRNo': 'Case_Count',
-#         'Case_Duration': 'Average_Duration'
-#     }, inplace=True)
-
-#     # Fill NaN values in Average_Duration with 0 and round
-#     grouped['Average_Duration'] = grouped['Average_Duration'].fillna(0).round(2)
-
-#     # Final adjustments
-#     grouped.drop(columns=['Unique_Crime_ID'], inplace=True)
-#     final_data = grouped.to_dict('records')
-
-#     return final_data
-
-
+df = pd.read_csv(csv_file_path1)
 import pandas as pd
 
 def calculate_io_details(unit_name):
@@ -161,7 +108,13 @@ def process_data(unit_name):
         'map_locations': map_locations.to_dict('records')
     }
 
+def calculate_metrics_for_officer(df, officer_name):
+    officer_data = df[df['IOName'] == officer_name]
+    fir_count = len(officer_data)
+    charged_count = officer_data['Accused_ChargeSheeted Count'].sum()
+    conviction_count = officer_data['Conviction Count'].sum()
 
+    return fir_count, charged_count, conviction_count
 @app.route("/data/<unit_name>")
 def get_station_data(unit_name):
     data = process_data(unit_name)
@@ -171,6 +124,36 @@ def get_station_data(unit_name):
 def get_io_details(unit_name):
     data = calculate_io_details(unit_name)
     return jsonify(data)
+
+
+# def calculate_io_performance(csv_file_path):
+#     df = pd.read_csv(csv_file_path)
+    
+#     # Calculate FIR count by IO
+#     fir_count_by_io = df.groupby('IOName').size().reset_index(name='FIR_Count')
+    
+#     # Calculate convictions by IO
+#     convictions_by_io = df.groupby('IOName')['Conviction Count'].sum().reset_index()
+#     performance_data = pd.merge(fir_count_by_io, convictions_by_io, on='IOName')
+    
+#     # Total FIRs and Convictions for rate calculations
+#     total_firs = performance_data['FIR_Count'].sum()
+#     total_convictions = performance_data['Conviction Count'].sum()
+    
+#     # Adding total counts for pie chart visualization
+#     performance_data['Total_FIRs'] = total_firs
+#     performance_data['Total_Convictions'] = total_convictions
+    
+#     # Convert to dictionary for JSON response
+#     performance_dict = performance_data.to_dict('records')
+#     return performance_dict
+
+
+# @app.route('/io_performance')
+# def io_performance():
+#     csv_file_path = r'merged_dataset.csv'  # Update this path
+#     data = calculate_io_performance(csv_file_path)
+#     return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
