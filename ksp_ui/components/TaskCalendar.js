@@ -1,67 +1,3 @@
-// import FullCalendar from '@fullcalendar/react';
-// import dayGridPlugin from '@fullcalendar/daygrid';
-// import interactionPlugin from '@fullcalendar/interaction'; // For clickable dates and draggable events
-// import { useDrop } from 'react-dnd';
-// import axios from 'axios';
-
-// const TaskCalendar = ({ tasks, onEventAdded }) => {
-//   const [{ isOver }, drop] = useDrop(() => ({
-//     accept: 'officer',
-//     drop: (item, monitor) => {
-//       const point = monitor.getClientOffset();
-//       const elements = document.elementsFromPoint(point.x, point.y);
-//       const calendarDayElement = elements.find(e => e.hasAttribute('data-date'));
-//       if (calendarDayElement) {
-//         const date = calendarDayElement.getAttribute('data-date');
-//         onEventAdded({ 
-//           date: date, 
-//           officerId: item.id 
-//         });
-//       }
-//     },
-//     collect: monitor => ({
-//       isOver: !!monitor.isOver(),
-//     }),
-//   }));
-//   const events = tasks.map(task => ({
-//     title: task.title,
-//     start: task.dueDate,
-//     extendedProps: {
-//       assignedTo: task.assignedTo,
-//     }
-//   }));
-
-//   return (
-// <div ref={drop} style={{ position: 'relative', backgroundColor: isOver ? 'lightblue' : 'white' }}>
-//     <FullCalendar
-//       plugins={[dayGridPlugin, interactionPlugin]}
-//       initialView="dayGridMonth"
-//       events={events}
-//       eventContent={renderEventContent}
-//       dayCellClassNames="border border-gray-300"
-//       dayHeaderClassNames="font-medium text-gray-600"
-//       className="rounded-lg shadow overflow-hidden"
-//     />
-//   </div>
-//   );
-// };
-
-// // Custom render function for events
-// function renderEventContent(eventInfo) {
-//   return (
-//     <>
-//       <b>{eventInfo.timeText}</b>
-//       <i>{eventInfo.event.title}</i>
-//       {/* Here you could add more details from eventInfo.event.extendedProps if needed */}
-//     </>
-//   );
-// }
-
-// export default TaskCalendar;
-
-
-
-
 import React, { useState } from 'react'
 import { formatDate } from '@fullcalendar/core'
 import FullCalendar from '@fullcalendar/react'
@@ -69,31 +5,61 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from './event-utils'
-
+import EventModal from './EventModal'
 export default function DemoApp() {
   const [weekendsVisible, setWeekendsVisible] = useState(true)
   const [currentEvents, setCurrentEvents] = useState([])
+  
+
+  // Add the modal component state
+const [isModalOpen, setIsModalOpen] = useState(false);
+const [modalDefaultDate, setModalDefaultDate] = useState(null);
+
+// Adjust handleDateSelect to manage the modal
+const handleDateSelect = (selectInfo) => {
+  setIsModalOpen(true);
+  setModalDefaultDate(selectInfo);
+};
+
+// Add a new function to handle the submission from the modal
+const handleEventSubmit = (eventData) => {
+  let calendarApi = modalDefaultDate.view.calendar;
+  calendarApi.unselect(); // clear date selection
+  setIsModalOpen(false); // Close the modal
+
+  calendarApi.addEvent({
+    id: createEventId(),
+    title: eventData.title,
+    start: eventData.start,
+    end: eventData.end,
+    allDay: modalDefaultDate.allDay,
+    extendedProps: {
+      description: eventData.description,
+      ioName: eventData.ioName,
+    },
+  });
+};
 
   function handleWeekendsToggle() {
     setWeekendsVisible(!weekendsVisible)
   }
 
-  function handleDateSelect(selectInfo) {
-    let title = prompt('Please enter a new title for your event')
-    let calendarApi = selectInfo.view.calendar
+  // function handleDateSelect(selectInfo) {
+  //   let title = prompt('Please enter a new title for your event')
+  //   let calendarApi = selectInfo.view.calendar
 
-    calendarApi.unselect() // clear date selection
+  //   calendarApi.unselect() // clear date selection
 
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay
-      })
-    }
-  }
+  //   if (title) {
+  //     calendarApi.addEvent({
+  //       id: createEventId(),
+  //       title,
+  //       start: selectInfo.startStr,
+  //       end: selectInfo.endStr,
+  //       allDay: selectInfo.allDay
+  //     })
+  //   }
+  // }
 
   function handleEventClick(clickInfo) {
     if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
@@ -112,7 +78,7 @@ export default function DemoApp() {
         handleWeekendsToggle={handleWeekendsToggle}
         currentEvents={currentEvents}
       />
-      <div className='demo-app-main'>
+      <div className='demo-app-main w-full'>
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           headerToolbar={{
@@ -137,6 +103,12 @@ export default function DemoApp() {
           eventRemove={function(){}}
           */
         />
+        <EventModal
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+  onSubmit={handleEventSubmit}
+  defaultDate={modalDefaultDate}
+/>
       </div>
     </div>
   )

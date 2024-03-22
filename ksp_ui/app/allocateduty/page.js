@@ -16,36 +16,19 @@ const Dashboard = () => {
         {
         setOfficers(res.data)})
       .catch(err => console.error(err));
-
-    axios.get('http://localhost:8000/api/tasks')
-      .then(res => setTasks(res.data))
-      .catch(err => console.error(err));
   }, []);
-
-  const handleEventAdded = (event) => {
-    axios.post('http://localhost:8000/api/tasks', {
-      title: "Assigned Task",
-      description: "Task assigned through calendar",
-      assignedTo: [event.officerId],
-      dueDate: event.date,
-    }).then(() => {
-      axios.get('http://localhost:5000/api/tasks')
-      .then(res => setTasks(res.data))
-      .catch(err => console.error(err));
-    }).catch(err => console.error(err));
-  };
 console.log(officers)
   return (
     <div className='flex w-full overflow-hidden'>
     <DndProvider backend={HTML5Backend}>
-      <div className='flex justify-between p-2 w-full'>
+      <div className='flex p-2 w-full'>
         <div className='flex flex-wrap bg-white w-1/4 items-center overflow-y-auto' style={{ maxHeight: '100vh' }}>
           {officers.map(officer => (
             <OfficerCard key={officer.IOName} officer={officer} />
           ))}
         </div>
-        <div >
-          <TaskCalendar tasks={tasks} onEventAdded={handleEventAdded} />
+        <div className='w-full' >
+          <TaskCalendar/>
         </div>
       </div>
     </DndProvider>
