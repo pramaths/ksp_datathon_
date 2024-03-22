@@ -1,5 +1,5 @@
 import pandas as pd
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_file
 from flask_cors import CORS
 from datetime import datetime
 app = Flask(__name__)
@@ -154,6 +154,23 @@ def get_io_details(unit_name):
 #     csv_file_path = r'merged_dataset.csv'  # Update this path
 #     data = calculate_io_performance(csv_file_path)
 #     return jsonify(data)
+
+@app.route('/filter_csv/<unitname>')
+def filter_csv(unitname):
+    # Load the large dataset
+    csv_file_path = r'Copy of FIR_Details_Data.csv'  # Update this to your actual CSV file path
+    df = pd.read_csv(csv_file_path)
+
+    # Filter the DataFrame based on 'UnitName'
+    filtered_df = df[df['UnitName'].str.upper() == unitname.upper()]
+
+    # Save the filtered DataFrame to a new CSV file
+    filtered_csv_path = f'/tmp/filtered_{unitname}.csv'  # Using /tmp for temporary storage
+    filtered_df.to_csv(filtered_csv_path, index=False)
+
+    # Send the filtered CSV file to the client
+    return send_file(filtered_csv_path, as_attachment=True)
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
