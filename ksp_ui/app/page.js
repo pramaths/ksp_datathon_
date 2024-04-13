@@ -1,39 +1,13 @@
-import Image from "next/image";
-import Homepage from '../components/Home'
-import Bar from '../components/Bar'
-import BubbleChart from "@/components/BubbleChart";
-import dynamic from "next/dynamic";
-import DataTable from "../components/DataTable";
-import PolarAreaChart from "../components/PolarChart";
-// import Tree from "../components/tree";
-// import DistributedTree from '../components/DistributesTree'
+import SearchPage from '../components/SearchPage';
 
-// Import your MapComponent with SSR disabled
-const MapComponentNoSSR = dynamic(() => import('../components/Map'), {
-  ssr: false, // This line is key to avoiding SSR for the map component
-});
-
-const DistributedTree = dynamic(() => import('../components/DistributesTree'), {
-  ssr: false, // This line is key to avoiding SSR for the map component
-});
-export default function Home() {
+export default function Search() {
   return (
-    <main className="flex min-h-screen flex-col  justify-between p-24 bg-white">
-      <div className="flex w-full">
-   <Homepage/>
-   <Bar/>
-   </div>
-   <BubbleChart/>
-   <div className="h-full">
-<DistributedTree/>
-</div>
-<DataTable/>
-<div className="flex justify-between">
-  <div className="flex items-start border shadow-xl justify-start">
-<PolarAreaChart/>
-</div>
-<MapComponentNoSSR/>
-</div>
-    </main>
+    <div>
+      <header className="bg-gray-900 text-white py-4 px-8 text-center items-center">
+        <h1 className="text-2xl font-bold mt-5 ">Police Resource Management</h1>
+        </header>
+    <SearchPage />
+    </div>
+
   );
 }

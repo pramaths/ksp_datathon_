@@ -8,8 +8,6 @@ CORS(app)
 csv_file_path = r'Narayanapura_PS_Unit.csv'  # Update to your CSV file path
 csv_file_path1 = r'merged_dataset.csv'  # Update to your CSV file path
 df = pd.read_csv(csv_file_path1)
-import pandas as pd
-
 def calculate_io_details(unit_name):
     df = pd.read_csv(csv_file_path1)
     
