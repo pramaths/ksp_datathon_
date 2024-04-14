@@ -50,9 +50,6 @@ flask run
 ```
 
 ...
-
-### Running the Applications
-
 #### Streamlit App (`LIDA-Demo-Streamlit-App`)
 
 To run the Streamlit app for interactive data demonstrations:
@@ -62,8 +59,6 @@ pip install streamlit
 cd LIDA-Demo-Streamlit-App
 streamlit run app.py  # Replace 'app.py' with the actual name of your Streamlit script
 ```
-
-### Running the Manpwoer Application
 
 #### Backend Server
 
