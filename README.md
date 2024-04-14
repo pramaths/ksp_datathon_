@@ -48,3 +48,32 @@ source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 pip install -r requirements.txt
 flask run
 ```
+
+...
+
+### Running the Applications
+
+#### Streamlit App (`LIDA-Demo-Streamlit-App`)
+
+To run the Streamlit app for interactive data demonstrations:
+
+```sh
+pip install streamlit
+cd LIDA-Demo-Streamlit-App
+streamlit run app.py  # Replace 'app.py' with the actual name of your Streamlit script
+```
+
+### Running the Mapwoer Application
+
+#### Backend Server
+
+To run the backend server for the Mapwoer project:
+
+```bash
+# Ensure you are in the root directory of your project first
+cd Manpower_backend
+npm install
+npm start
+
+```
+
