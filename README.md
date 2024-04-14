@@ -73,7 +73,7 @@ To run the backend server for the Mapwoer project:
 # Ensure you are in the root directory of your project first
 cd Manpower_backend
 npm install
-npm start
+node index.js
 
 ```
 
